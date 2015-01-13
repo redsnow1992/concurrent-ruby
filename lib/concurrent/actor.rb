@@ -33,6 +33,7 @@ module Concurrent
     require 'concurrent/actor/default_dead_letter_handler'
     require 'concurrent/actor/root'
     require 'concurrent/actor/utils'
+    require 'concurrent/actor/server'
 
     # @return [Reference, nil] current executing actor if any
     def self.current
