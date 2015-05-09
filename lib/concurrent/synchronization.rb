@@ -7,6 +7,8 @@ require 'concurrent/synchronization/rbx_object'
 require 'concurrent/synchronization/object'
 
 require 'concurrent/synchronization/immutable_struct'
+require 'concurrent/synchronization/condition'
+require 'concurrent/synchronization/lock'
 
 module Concurrent
   # {include:file:doc/synchronization.md}
