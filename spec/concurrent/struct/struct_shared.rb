@@ -11,7 +11,7 @@ shared_examples :struct do
       expect(clazz.ancestors).to include described_class
     end
 
-    it 'creates an anonymous class when given at least one member name' do
+    it 'creates an anonymous class when given at least one member' do
       clazz = described_class.new(:foo)
       expect{ described_class.const_get(clazz.to_s) }.to raise_error(NameError)
       expect(clazz).to be_a Class
@@ -24,27 +24,27 @@ shared_examples :struct do
       expect{ described_class.new('1') }.to raise_error(NameError)
     end
 
-    it 'defines a getter for each field name' do
-      fields = [:Foo, :bar, 'baz']
+    it 'defines a getter for each member' do
+      members = [:Foo, :bar, 'baz']
       structs = [
-        described_class.new(*fields).new,
-        described_class.new('ClassForCheckingGetterDefinition', *fields).new
+        described_class.new(*members).new,
+        described_class.new('ClassForCheckingGetterDefinition', *members).new
       ]
 
       structs.each do |struct|
-        fields.each do |field|
-          expect(struct).to respond_to field
-          method = struct.method(field)
+        members.each do |member|
+          expect(struct).to respond_to member
+          method = struct.method(member)
           expect(method.arity).to eq 0
         end
       end
     end
 
-    it 'raises an exception when given no field names' do
+    it 'raises an exception when given no members' do
       expect{ described_class.new() }.to raise_error(ArgumentError)
     end
 
-    it 'raise an exception when given an invalid field name' do
+    it 'raise an exception when given an invalid member' do
       expect{ described_class.new('ClassForCheckingValidFieldNames1', 1) }.to raise_error(TypeError)
     end
 
@@ -67,34 +67,34 @@ shared_examples :struct do
 
   context 'construction' do
 
-    let!(:fields){ [:Foo, :bar, 'baz'] }
+    let!(:members){ [:Foo, :bar, 'baz'] }
     let!(:values){ [42, '42', :fortytwo] }
     let!(:classes) do
       [
-        described_class.new(*fields),
-        described_class.new('StructConstructionTester', *fields)
+        described_class.new(*members),
+        described_class.new('StructConstructionTester', *members)
       ]
     end
 
-    it 'sets all absent fields to nil' do
+    it 'sets all absent members to nil' do
       classes.each do |clazz|
         struct = clazz.new
-        fields.each do |field|
-          expect(struct.send(field)).to be_nil
+        members.each do |member|
+          expect(struct.send(member)).to be_nil
         end
       end
     end
 
-    it 'sets all given fields in order' do
+    it 'sets all given members in order' do
       classes.each do |clazz|
         struct = clazz.new(*values)
-        fields.each_with_index do |field, index|
-          expect(struct.send(field)).to eq values[index]
+        members.each_with_index do |member, index|
+          expect(struct.send(member)).to eq values[index]
         end
       end
     end
 
-    it 'raises an exception when extra fields are given' do
+    it 'raises an exception when extra members are given' do
       classes.each do |clazz|
         extra_values = values << 'forty two'
         expect{ clazz.new(*extra_values) }.to raise_error(ArgumentError)
@@ -214,22 +214,22 @@ shared_examples :struct do
 
     context '#[member]' do
 
-      it 'retrieves the value when given a valid symbol member name' do
+      it 'retrieves the value when given a valid symbol member' do
         expect(anon_instance[:address]).to eq 'Earth'
         expect(named_instance[:right]).to eq 'down'
       end
 
-      it 'retrieves the value when given a valid string member name' do
+      it 'retrieves the value when given a valid string member' do
         expect(anon_instance['address']).to eq 'Earth'
         expect(named_instance['right']).to eq 'down'
       end
 
-      it 'raises an exception when given a non-existent symbol member name' do
+      it 'raises an exception when given a non-existent symbol member' do
         expect{anon_instance[:foo]}.to raise_error(NameError)
         expect{named_instance[:bar]}.to raise_error(NameError)
       end
 
-      it 'raises an exception when given a non-existent string member name' do
+      it 'raises an exception when given a non-existent string member' do
         expect{anon_instance['foo']}.to raise_error(NameError)
         expect{named_instance['bar']}.to raise_error(NameError)
       end
@@ -405,15 +405,5 @@ shared_examples :struct do
         expect(named_struct.new(:yes, :no).to_h).to eq expected
       end
     end
-  end
-end
-
-#describe Struct do
-  #it_should_behave_like :struct
-#end
-
-module Concurrent
-  describe ImmutableStruct do
-    it_should_behave_like :struct
   end
 end

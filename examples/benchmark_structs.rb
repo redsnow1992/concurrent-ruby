@@ -7,18 +7,21 @@ require 'concurrent'
 
 n = 500_000
 
-Pair = Struct.new(:left, :right)
-ImmPair = Concurrent::ImmutableStruct.new(:left, :right)
+StructPair = Struct.new(:left, :right)
+SafePair = Concurrent::SafeStruct.new(:left, :right)
+ImmutablePair = Concurrent::ImmutableStruct.new(:left, :right)
 
 array_pair = [true, false].freeze
-struct_pair = Pair.new(true, false)
-immutable = ImmPair.new(true, false)
+struct_pair = StructPair.new(true, false)
+safe_pair = SafePair.new(true, false)
+immutable = ImmutablePair.new(true, false)
 
 puts "Object creation...\n"
 Benchmark.bmbm do |x|
   x.report('create frozen array') { n.times{ [true, false].freeze } }
-  x.report('create frozen struct') { n.times{ Pair.new(true, false).freeze } }
-  x.report('create immutable struct') { n.times{ ImmPair.new(true, false) } }
+  x.report('create frozen struct') { n.times{ StructPair.new(true, false).freeze } }
+  x.report('create safe struct') { n.times{ SafePair.new(true, false) } }
+  x.report('create immutable struct') { n.times{ ImmutablePair.new(true, false) } }
 end
 
 puts "\n"
@@ -27,31 +30,37 @@ puts "Object access...\n"
 Benchmark.bmbm do |x|
   x.report('read from frozen array') { n.times{ array_pair.last } }
   x.report('read from frozen struct') { n.times{ struct_pair.right } }
+  x.report('read from safe struct') { n.times{ safe_pair.right } }
   x.report('read from immutable struct') { n.times{ immutable.right } }
 end
 
 __END__
 
+
 Object creation...
 Rehearsal -----------------------------------------------------------
-create frozen array       0.070000   0.000000   0.070000 (  0.067940)
-create frozen struct      0.130000   0.000000   0.130000 (  0.138427)
-create immutable struct   0.440000   0.000000   0.440000 (  0.438358)
--------------------------------------------------- total: 0.640000sec
+create frozen array       0.070000   0.000000   0.070000 (  0.063610)
+create frozen struct      0.130000   0.000000   0.130000 (  0.130142)
+create safe struct        1.400000   0.000000   1.400000 (  1.404866)
+create immutable struct   0.550000   0.000000   0.550000 (  0.546921)
+-------------------------------------------------- total: 2.150000sec
 
                               user     system      total        real
-create frozen array       0.060000   0.000000   0.060000 (  0.059133)
-create frozen struct      0.140000   0.000000   0.140000 (  0.139155)
-create immutable struct   0.420000   0.000000   0.420000 (  0.421774)
+create frozen array       0.070000   0.000000   0.070000 (  0.063068)
+create frozen struct      0.140000   0.000000   0.140000 (  0.135902)
+create safe struct        1.370000   0.000000   1.370000 (  1.371264)
+create immutable struct   0.550000   0.000000   0.550000 (  0.545862)
 
 Object access...
 Rehearsal --------------------------------------------------------------
-read from frozen array       0.040000   0.000000   0.040000 (  0.035394)
-read from frozen struct      0.030000   0.000000   0.030000 (  0.034680)
-read from immutable struct   0.090000   0.000000   0.090000 (  0.088073)
------------------------------------------------------ total: 0.160000sec
+read from frozen array       0.030000   0.000000   0.030000 (  0.035195)
+read from frozen struct      0.040000   0.000000   0.040000 (  0.033263)
+read from safe struct        0.230000   0.000000   0.230000 (  0.228534)
+read from immutable struct   0.060000   0.000000   0.060000 (  0.069687)
+----------------------------------------------------- total: 0.360000sec
 
                                  user     system      total        real
-read from frozen array       0.040000   0.000000   0.040000 (  0.035402)
-read from frozen struct      0.030000   0.000000   0.030000 (  0.033434)
-read from immutable struct   0.080000   0.000000   0.080000 (  0.086537)
+read from frozen array       0.030000   0.000000   0.030000 (  0.034308)
+read from frozen struct      0.040000   0.000000   0.040000 (  0.034345)
+read from safe struct        0.240000   0.000000   0.240000 (  0.240889)
+read from immutable struct   0.080000   0.000000   0.080000 (  0.069762)
