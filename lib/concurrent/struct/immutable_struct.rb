@@ -25,6 +25,12 @@ module Concurrent
       ns_values_at(indexes)
     end
 
+    # @!macro struct_inspect
+    def inspect
+      ns_inspect
+    end
+    alias_method :to_s, :inspect
+
     # @!macro struct_to_h
     def to_h
       ns_to_h

@@ -131,6 +131,16 @@ module Concurrent
         subject.name = :foo
       end
 
+      it 'protects #to_s' do
+        expect(subject).to receive(:synchronize).at_least(:once).with(no_args).and_call_original
+        subject.to_s
+      end
+
+      it 'protects #inspect' do
+        expect(subject).to receive(:synchronize).at_least(:once).with(no_args).and_call_original
+        subject.inspect
+      end
+
       it 'protects #to_h' do
         expect(subject).to receive(:synchronize).at_least(:once).with(no_args).and_call_original
         subject.to_h

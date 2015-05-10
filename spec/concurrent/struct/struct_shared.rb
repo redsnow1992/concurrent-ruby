@@ -364,6 +364,49 @@ shared_examples :struct do
                           *named_struct_members)
     end
 
+    context '#to_s' do
+
+      it 'includes the name of the class when registered' do
+        expect(named_struct.new.to_s).to match(/#{named_struct}/)
+      end
+
+      it 'includes the names of all members' do
+        string = anon_struct.new.to_s
+        anon_struct_members.each do |member|
+          expect(string).to match(/#{member}/)
+        end
+
+        string = named_struct.new.to_s
+        named_struct_members.each do |member|
+          expect(string).to match(/#{member}/)
+        end
+      end
+
+      it 'includes all values' do
+        values = [:foo, 'bar', 42]
+        string = anon_struct.new(*values).to_s
+        values.each do |value|
+          expect(string).to match(/#{value}/)
+        end
+
+        values = ['bar', 42]
+        string = named_struct.new(*values).to_s
+        values.each do |value|
+          expect(string).to match(/#{value}/)
+        end
+      end
+
+      it 'returns the same string as #inspect' do
+        values = [:foo, 'bar', 42]
+        struct = anon_struct.new(*values)
+        expect(struct.to_s).to eq struct.inspect
+
+        values = ['bar', 42]
+        struct = named_struct.new(*values)
+        expect(struct.to_s).to eq struct.inspect
+      end
+    end
+
     context '#to_a' do
       it 'returns the to_a for this struct as an array' do
         expect(anon_struct.new().to_a).to eq [nil, nil, nil]

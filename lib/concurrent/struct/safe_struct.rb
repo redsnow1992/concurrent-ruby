@@ -63,6 +63,16 @@ module Concurrent
       synchronize { ns_values_at(indexes) }
     end
 
+    # @!macro [attach] struct_inspect
+    #
+    #   Describe the contents of this struct in a string.
+    #
+    #   @return [String] the contents of this struct in a string
+    def inspect
+      synchronize { ns_inspect }
+    end
+    alias_method :to_s, :inspect
+
     # @!macro [attach] struct_to_h
     #
     #   Returns a hash containing the names and values for the struct’s members.

@@ -42,32 +42,32 @@ __END__
 
 Object creation...
 Rehearsal -----------------------------------------------------------
-create frozen array       0.070000   0.000000   0.070000 (  0.066659)
-create frozen struct      0.130000   0.000000   0.130000 (  0.131200)
-create safe struct        1.440000   0.000000   1.440000 (  1.438497)
-create final struct       1.460000   0.000000   1.460000 (  1.457180)
-create immutable struct   0.540000   0.000000   0.540000 (  0.543110)
--------------------------------------------------- total: 3.640000sec
+create frozen array       0.060000   0.000000   0.060000 (  0.066632)
+create frozen struct      0.130000   0.000000   0.130000 (  0.126764)
+create safe struct        1.420000   0.000000   1.420000 (  1.417887)
+create final struct       1.420000   0.010000   1.430000 (  1.420508)
+create immutable struct   0.530000   0.000000   0.530000 (  0.534522)
+-------------------------------------------------- total: 3.570000sec
 
                               user     system      total        real
-create frozen array       0.060000   0.000000   0.060000 (  0.063805)
-create frozen struct      0.150000   0.000000   0.150000 (  0.138850)
-create safe struct        1.420000   0.000000   1.420000 (  1.420694)
-create final struct       1.400000   0.000000   1.400000 (  1.397313)
-create immutable struct   0.540000   0.000000   0.540000 (  0.535394)
+create frozen array       0.070000   0.000000   0.070000 (  0.060200)
+create frozen struct      0.130000   0.000000   0.130000 (  0.126227)
+create safe struct        1.440000   0.000000   1.440000 (  1.436948)
+create final struct       1.420000   0.000000   1.420000 (  1.418843)
+create immutable struct   0.530000   0.000000   0.530000 (  0.534623)
 
 Object access...
 Rehearsal --------------------------------------------------------------
-read from frozen array       0.030000   0.000000   0.030000 (  0.035155)
-read from frozen struct      0.040000   0.000000   0.040000 (  0.034896)
-read from safe struct        0.230000   0.000000   0.230000 (  0.232889)
-read from final struct       0.230000   0.000000   0.230000 (  0.229081)
-read from immutable struct   0.060000   0.000000   0.060000 (  0.065804)
------------------------------------------------------ total: 0.590000sec
+read from frozen array       0.040000   0.000000   0.040000 (  0.036472)
+read from frozen struct      0.030000   0.000000   0.030000 (  0.033837)
+read from safe struct        0.250000   0.000000   0.250000 (  0.244960)
+read from final struct       0.240000   0.000000   0.240000 (  0.241092)
+read from immutable struct   0.070000   0.000000   0.070000 (  0.067376)
+----------------------------------------------------- total: 0.630000sec
 
                                  user     system      total        real
-read from frozen array       0.040000   0.000000   0.040000 (  0.037103)
-read from frozen struct      0.040000   0.000000   0.040000 (  0.033774)
-read from safe struct        0.230000   0.000000   0.230000 (  0.232363)
-read from final struct       0.240000   0.000000   0.240000 (  0.245618)
-read from immutable struct   0.080000   0.000000   0.080000 (  0.074343)
+read from frozen array       0.040000   0.000000   0.040000 (  0.034032)
+read from frozen struct      0.030000   0.000000   0.030000 (  0.032540)
+read from safe struct        0.250000   0.000000   0.250000 (  0.250463)
+read from final struct       0.240000   0.000000   0.240000 (  0.234275)
+read from immutable struct   0.070000   0.000000   0.070000 (  0.069682)

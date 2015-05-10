@@ -91,6 +91,26 @@ module Concurrent
       values.select{|value| yield value }
     end
 
+    # @!macro struct_inspect
+    #
+    # @!visibility private
+    def ns_inspect
+      struct = pr_underscore(self.class.ancestors[1])
+      clazz = ((self.class.to_s =~ /^#<Class:/) == 0) ? '' : " #{self.class}"
+      "#<#{struct}#{clazz} #{ns_to_h}>"
+    end
+
+    # @!visibility private
+    def pr_underscore(clazz)
+      word = clazz.to_s
+      word.gsub!(/::/, '/')
+      word.gsub!(/([A-Z]+)([A-Z][a-z])/,'\1_\2')
+      word.gsub!(/([a-z\d])([A-Z])/,'\1_\2')
+      word.tr!("-", "_")
+      word.downcase!
+      word
+    end
+
     # @!visibility private
     def self.define_struct_class(parent, base, name, members, &block)
       clazz = Class.new(base || Object) do
