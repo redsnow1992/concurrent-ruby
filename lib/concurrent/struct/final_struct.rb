@@ -1,9 +1,12 @@
 require 'concurrent/struct/abstract_struct'
+require 'concurrent/errors'
 require 'concurrent/synchronization'
 
 module Concurrent
-  module SafeStruct
+  module FinalStruct
     include AbstractStruct
+
+    NO_VALUE = Object.new
 
     def values
       synchronize { ns_values }
@@ -47,7 +50,12 @@ module Concurrent
         if member >= @values.length
           raise IndexError.new("offset #{member} too large for struct(size:#{@values.length})")
         end
-        synchronize { @values[member] = value }
+        synchronize do
+          unless @values[member].nil?
+            raise Concurrent::ImmutabilityError.new('struct member has already been set')
+          end
+          @values[member] = value
+        end
       else
         send("#{member}=", value)
       end
@@ -68,13 +76,18 @@ module Concurrent
     FACTORY = Class.new(Synchronization::Object) do
       def define_struct(name, members, &block)
         synchronize do
-          clazz = AbstractStruct.define_struct_class(SafeStruct, Synchronization::Object, name, members, &block)
+          clazz = AbstractStruct.define_struct_class(FinalStruct, Synchronization::Object, name, members, &block)
           members.each_with_index do |member, index|
             clazz.send(:define_method, member) do
               synchronize { @values[index] }
             end
             clazz.send(:define_method, "#{member}=") do |value|
-              synchronize { @values[index] = value }
+              synchronize do
+                unless @values[index].nil?
+                  raise Concurrent::ImmutabilityError.new('struct member has already been set')
+                end
+                @values[index] = value
+              end
             end
           end
           clazz

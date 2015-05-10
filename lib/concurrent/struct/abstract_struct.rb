@@ -55,7 +55,7 @@ module Concurrent
       values.select{|value| yield value }
     end
 
-    def self.define_struct_class(parent, base, name, *members, &block)
+    def self.define_struct_class(parent, base, name, members, &block)
       clazz = Class.new(base || Object) do
         include parent
         self.const_set(:MEMBERS, members.collect{|member| member.to_s.to_sym}.freeze) 

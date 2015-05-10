@@ -53,13 +53,13 @@ module Concurrent
       elsif args.length > 0 && args.first.is_a?(String)
         clazz_name = args.shift
       end
-      FACTORY.define_struct(clazz_name, *args, &block)
+      FACTORY.define_struct(clazz_name, args, &block)
     end
 
     FACTORY = Class.new(Synchronization::Object) do
-      def define_struct(name, *members, &block)
+      def define_struct(name, members, &block)
         synchronize do
-          AbstractStruct.define_struct_class(ImmutableStruct, nil, name, *members, &block)
+          AbstractStruct.define_struct_class(ImmutableStruct, nil, name, members, &block)
         end
       end
     end.new
