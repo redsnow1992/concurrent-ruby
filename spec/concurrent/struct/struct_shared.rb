@@ -288,21 +288,6 @@ shared_examples :struct do
         expect(jane != joe).to be true
       end
     end
-
-    context '#eql?' do
-
-      it 'returns true if other has same struct subclass and equal values' do
-        expect(joe.eql?(joejr)).to be true
-      end
-
-      it 'returns false if other has different struct subclass' do
-        expect(jane.eql?(janejr)).to be false
-      end
-
-      it 'returns false if other has different values' do
-        expect(jane.eql?(joe)).to be false
-      end
-    end
   end
 
   context 'enumeration' do

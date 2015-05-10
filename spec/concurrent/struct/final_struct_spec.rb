@@ -141,11 +141,6 @@ module Concurrent
         subject == joe
       end
 
-      it 'protects #eql?' do
-        expect(subject).to receive(:synchronize).at_least(:once).with(no_args).and_call_original
-        subject.eql?(joe)
-      end
-
       it 'protects #each' do
         expect(subject).to receive(:synchronize).at_least(:once).with(no_args).and_call_original
         subject.each{|value| nil }

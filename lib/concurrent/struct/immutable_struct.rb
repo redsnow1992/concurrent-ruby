@@ -2,50 +2,63 @@ require 'concurrent/struct/abstract_struct'
 require 'concurrent/synchronization'
 
 module Concurrent
+
+  # A thread-safe, immutable variation of Ruby's standard `Struct`.
+  #
+  # @see http://ruby-doc.org/core-2.2.0/Struct.html Ruby standard library `Struct`
   module ImmutableStruct
     include AbstractStruct
 
+    # @!visibility private
     def initialize(*values)
       ns_initialize(*values)
     end
 
+    # @!macro struct_values
     def values
       ns_values
     end
     alias_method :to_a, :values
 
+    # @!macro struct_values_at
     def values_at(*indexes)
       ns_values_at(indexes)
     end
 
+    # @!macro struct_to_h
     def to_h
       ns_to_h
     end
 
+    # @!macro struct_get
     def [](member)
       ns_get(member)
     end
 
+    # @!macro struct_equality
     def ==(other)
-      ns_equivalent(other)
+      ns_equality(other)
     end
-    alias_method :eql?, :==
 
+    # @!macro struct_each
     def each
       return enum_for(:each) unless block_given?
       ns_each(&Proc.new)
     end
 
+    # @!macro struct_each_pair
     def each_pair
       return enum_for(:each_pair) unless block_given?
       ns_each_pair(&Proc.new)
     end
 
+    # @!macro struct_select
     def select
       return enum_for(:select) unless block_given?
       ns_select(&Proc.new)
     end
 
+    # @!macro struct_new
     def self.new(*args, &block)
       clazz_name = nil
       if args.length == 0

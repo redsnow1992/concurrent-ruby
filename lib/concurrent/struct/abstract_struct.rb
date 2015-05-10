@@ -1,29 +1,53 @@
 module Concurrent
+
+  # @!visibility private
   module AbstractStruct
 
+    # @!macro [attach] struct_length
+    #
+    #   Returns the number of struct members.
+    #
+    #   @return [Fixnum] the number of struct members
     def length
       self.class::MEMBERS.length
     end
     alias_method :size, :length
 
+    # @!macro [attach] struct_members
+    #
+    #   Returns the struct members as an array of symbols.
+    #
+    #   @return [Array] the struct members as an array of symbols
     def members
       self.class::MEMBERS.dup
     end
 
     protected
 
+    # @!macro struct_values
+    #
+    # @!visibility private
     def ns_values
       @values.dup
     end
 
+    # @!macro struct_values_at
+    #
+    # @!visibility private
     def ns_values_at(indexes)
       @values.values_at(*indexes)
     end
 
+    # @!macro struct_to_h
+    #
+    # @!visibility private
     def ns_to_h
       length.times.reduce({}){|memo, i| memo[self.class::MEMBERS[i]] = @values[i]; memo}
     end
 
+    # @!macro struct_get
+    #
+    # @!visibility private
     def ns_get(member)
       if member.is_a? Integer
         if member >= @values.length
@@ -37,24 +61,37 @@ module Concurrent
       raise NameError.new("no member '#{member}' in struct")
     end
 
-    def ns_equivalent(other)
+    # @!macro struct_equality
+    #
+    # @!visibility private
+    def ns_equality(other)
       self.class == other.class && self.values == other.values
     end
 
+    # @!macro struct_each
+    #
+    # @!visibility private
     def ns_each
       values.each{|value| yield value }
     end
 
+    # @!macro struct_each_pair
+    #
+    # @!visibility private
     def ns_each_pair
       @values.length.times do |index|
         yield self.class::MEMBERS[index], @values[index]
       end
     end
 
+    # @!macro struct_select
+    #
+    # @!visibility private
     def ns_select
       values.select{|value| yield value }
     end
 
+    # @!visibility private
     def self.define_struct_class(parent, base, name, members, &block)
       clazz = Class.new(base || Object) do
         include parent

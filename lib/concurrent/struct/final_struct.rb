@@ -3,48 +3,64 @@ require 'concurrent/errors'
 require 'concurrent/synchronization'
 
 module Concurrent
+
+  # An thread-safe, write-one variation of Ruby's standard `Struct`.
+  # Each member can have its value set at most one, either at construction
+  # or any time thereafter. Attempting to assign a value to a member
+  # that has already been set will result in a `Concurrent::ImmutabilityError`.
+  #
+  # @see http://ruby-doc.org/core-2.2.0/Struct.html Ruby standard library `Struct`
+  # @see http://en.wikipedia.org/wiki/Final_(Java) Java `final` keyword
   module FinalStruct
     include AbstractStruct
 
-    NO_VALUE = Object.new
-
+    # @!macro struct_values
     def values
       synchronize { ns_values }
     end
     alias_method :to_a, :values
 
+    # @!macro struct_values_at
     def values_at(*indexes)
       synchronize { ns_values_at(indexes) }
     end
 
+    # @!macro struct_to_h
     def to_h
       synchronize { ns_to_h }
     end
 
+    # @!macro struct_get
     def [](member)
       synchronize { ns_get(member) }
     end
 
+    # @!macro struct_equality
     def ==(other)
-      synchronize { ns_equivalent(other) }
+      synchronize { ns_equality(other) }
     end
-    alias_method :eql?, :==
 
+    # @!macro struct_each
     def each
       return enum_for(:each) unless block_given?
       synchronize { ns_each(&Proc.new) }
     end
 
+    # @!macro struct_each_pair
     def each_pair
       return enum_for(:each_pair) unless block_given?
       synchronize { ns_each_pair(&Proc.new) }
     end
 
+    # @!macro struct_select
     def select
       return enum_for(:select) unless block_given?
       synchronize { ns_select(&Proc.new) }
     end
 
+    # @!macro struct_set
+    #
+    # @raise [Concurrent::ImmutabilityError] if the given member has already been set
     def []=(member, value)
       if member.is_a? Integer
         if member >= @values.length
@@ -63,6 +79,7 @@ module Concurrent
       raise NameError.new("no member '#{member}' in struct")
     end
 
+    # @!macro struct_new
     def self.new(*args, &block)
       clazz_name = nil
       if args.length == 0
